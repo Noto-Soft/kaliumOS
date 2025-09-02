@@ -145,9 +145,13 @@ start:
     mov ax, KERNEL_SEGMENT
     mov es, ax
 
-    jmp KERNEL_SEGMENT:KERNEL_OFFSET
+    cli
+    lgdt [gdtinfo]
+    mov eax, cr0
+    or eax, 1
+    mov cr0, eax
 
-    jmp $ ; redundant
+    jmp 0x8:pmode
 
 lba_to_chs:
     push ax
@@ -217,11 +221,33 @@ disk_reset:
     popa
     ret
 
+use32
+
+pmode:
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    mov esp, 0x90000
+
+    jmp KERNEL_SEGMENT * 2 * 2 * 2 * 2 + KERNEL_OFFSET
+
 file_kernel_bin db "KERNEL  BIN"
 kernel_cluster dw 0
 
-KERNEL_SEGMENT = 0x2000
-KERNEL_OFFSET = 0x0000
+KERNEL_SEGMENT = 0x0000
+KERNEL_OFFSET = 0x500
+
+gdtinfo:
+    dw gdt_end - gdt - 1
+    dd gdt
+
+gdt:        dd 0,0        ; entry 0 is always unused
+codedesc:   db 0xff, 0xff, 0, 0, 0, 10011010b, 11001111b, 0
+flatdesc:   db 0xff, 0xff, 0, 0, 0, 10010010b, 11001111b, 0
+gdt_end:
 
 label buffer
 
