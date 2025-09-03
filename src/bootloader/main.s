@@ -244,9 +244,11 @@ gdtinfo:
     dw gdt_end - gdt - 1
     dd gdt
 
-gdt:        dd 0,0        ; entry 0 is always unused
-codedesc:   db 0xff, 0xff, 0, 0, 0, 10011010b, 11001111b, 0
-flatdesc:   db 0xff, 0xff, 0, 0, 0, 10010010b, 11001111b, 0
+gdt: dd 0,0        ; entry 0 is always unused
+kernelcodedesc: db 0xff, 0xff, 0, 0, 0, 10011010b, 11001111b, 0
+kerneldatadesc: db 0xff, 0xff, 0, 0, 0, 10010010b, 11001111b, 0
+usercodedesc: db 0xff, 0xff, 0, 0, 0, 11111010b, 11001111b, 0
+userdatadesc: db 0xff, 0xff, 0, 0, 0, 11110010b, 11001111b, 0
 gdt_end:
 
 label buffer

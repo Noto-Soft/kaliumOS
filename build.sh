@@ -5,10 +5,12 @@ mkdir -p build{/,/kernel}
 
 # assemble binaries
 fasm src/bootloader/main.s build/boot.bin
+fasm src/kernel/stubs.s build/kernel/stubs.o
+fasm src/kernel/idt/stubs.s build/kernel/idtstubs.o
 
 # compile c sources
 
-for file in src/kernel/*.c; do
+for file in src/kernel/{,idt/,pic/}*.c; do
     filename=$(basename "$file" .c)
     gcc $CC_LFLAGS -c "$file" -o "build/kernel/$filename.o"
 done
