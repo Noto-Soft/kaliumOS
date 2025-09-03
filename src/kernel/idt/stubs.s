@@ -2,18 +2,19 @@ use32
 format elf
 
 section '.text'
-extrn exception_handler
 
 macro isr_err_stub id {
+  public isr_stub_#id
   isr_stub_#id:
-        call exception_handler
-        iret
+        cli
+        hlt
 }
 
 macro isr_no_err_stub id {
+  public isr_stub_#id
   isr_stub_#id:
-        call exception_handler
-        iret
+        cli
+        hlt
 }
 
 isr_no_err_stub 0
@@ -62,3 +63,5 @@ isr_stub_table:
         isr_stub_20, isr_stub_21, isr_stub_22, isr_stub_23, \
         isr_stub_24, isr_stub_25, isr_stub_26, isr_stub_27, \
         isr_stub_28, isr_stub_29, isr_stub_30, isr_stub_31
+
+section '.note.GNU-stack'

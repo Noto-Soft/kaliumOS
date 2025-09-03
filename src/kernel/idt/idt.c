@@ -5,11 +5,6 @@ static idt_entry_t idt[256];
 
 static idtr_t idtr;
 
-void exception_handler() {
-    __asm__ volatile ("cli");
-    for (;;) {}
-}
-
 void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) {
     idt_entry_t* descriptor = &idt[vector];
 
@@ -29,6 +24,13 @@ void idt_init() {
         vectors[vector] = true;
     }
 
-    __asm__ volatile ("lidt %0" : : "m"(idtr)); // load the new IDT
-    __asm__ volatile ("sti"); // set the interrupt flag
+    __asm__ volatile ("lidt %0" : : "m"(idtr)); // load the new IDT   
+}
+
+void idt_enable() {
+    __asm__ volatile ("sti");
+}
+
+void idt_disable() {
+    __asm__ volatile ("cli");
 }

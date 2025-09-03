@@ -1,11 +1,19 @@
 use32
 format elf
 
-public int0x21
-extrn int0x21_c
-int0x21:
+section '.text'
+
+macro irq_stub labl, ext {
+public labl
+extrn ext
+labl:
     pusha
-    call int0x21_c
-    popa
+    call ext
+    mov al, 0x20
     out 0x20, al
+    out 0xa0, al
+    popa
     iret
+}
+
+section '.note.GNU-stack'

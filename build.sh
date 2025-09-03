@@ -1,6 +1,7 @@
 CC_LFLAGS="-ffreestanding -m32 -nostdlib -fno-pie -fno-pic"
 LD_LFLAGS="-m elf_i386 -nostdlib"
 
+rm -rf build/
 mkdir -p build{/,/kernel}
 
 # assemble binaries
@@ -16,7 +17,8 @@ for file in src/kernel/{,idt/,pic/}*.c; do
 done
 
 # Link all .o files
-ld $LD_LFLAGS -Tsrc/kernel/linker.ld build/kernel/*.o -o build/kernel.bin
+ld $LD_LFLAGS -r -o build/kernel.o build/kernel/*.o
+ld $LD_LFLAGS -Tsrc/kernel/linker.ld build/kernel.o -o build/kernel.bin
 
 # create disk
 dd if=/dev/zero of=kaliumOS.img bs=512 count=2880
