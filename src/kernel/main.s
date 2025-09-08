@@ -243,4 +243,4 @@ drive db 0
 cursor_shape dw 0x003f
 cursor_position dw 0
 
-kalium_os db "kaliumOS version 0.00.2.1", 0xa, "rich in potassium", 0
+kalium_os db "kaliumOS version 0.00.2.0", 0xa, "rich in potassium", 0
