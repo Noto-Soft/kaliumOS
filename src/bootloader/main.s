@@ -142,16 +142,8 @@ start:
     jmp .load_loop
 .finish:
     mov dl, [ebr_drive]
-    mov ax, KERNEL_SEGMENT
-    mov es, ax
 
-    cli
-    lgdt [gdtinfo]
-    mov eax, cr0
-    or eax, 1
-    mov cr0, eax
-
-    jmp 0x8:pmode
+    jmp KERNEL_SEGMENT:KERNEL_OFFSET
 
 lba_to_chs:
     push ax
@@ -221,35 +213,11 @@ disk_reset:
     popa
     ret
 
-use32
-
-pmode:
-    mov ax, 0x10
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
-    mov esp, 0x90000
-
-    jmp KERNEL_SEGMENT * 2 * 2 * 2 * 2 + KERNEL_OFFSET
-
 file_kernel_bin db "KERNEL  BIN"
 kernel_cluster dw 0
 
-KERNEL_SEGMENT = 0x0000
-KERNEL_OFFSET = 0x500
-
-gdtinfo:
-    dw gdt_end - gdt - 1
-    dd gdt
-
-gdt: dd 0,0        ; entry 0 is always unused
-kernelcodedesc: db 0xff, 0xff, 0, 0, 0, 10011010b, 11001111b, 0
-kerneldatadesc: db 0xff, 0xff, 0, 0, 0, 10010010b, 11001111b, 0
-usercodedesc: db 0xff, 0xff, 0, 0, 0, 11111010b, 11001111b, 0
-userdatadesc: db 0xff, 0xff, 0, 0, 0, 11110010b, 11001111b, 0
-gdt_end:
+KERNEL_SEGMENT = 0x500
+KERNEL_OFFSET = 0x0
 
 label buffer
 
