@@ -10,10 +10,12 @@ main:
     mov ds, ax
     mov es, ax
 
-    mov dl, [drive]
+    mov [drive], dl
+    mov [bpb_sectors_per_track], cx
+    mov [bpb_heads], bx
 
-    mov ax, 0x3
-    int 0x10
+    mov bl, 0x7
+    call clear_screen
 
     call enable_cursor
 
@@ -239,8 +241,79 @@ scroll_screen:
     pop ax
     ret
 
+lba_to_chs:
+    push ax
+    push dx
+
+    xor dx, dx
+    div word [cs:bpb_sectors_per_track]
+
+    inc dx
+    mov cx, dx
+
+    xor dx, dx
+    div word [cs:bpb_heads]
+
+    mov dh, dl
+    mov ch, al
+    shl ah, 6
+    or cl, ah
+    pop ax
+    mov dl, al
+    pop ax
+    ret
+
+disk_read:
+    push ax
+    push bx
+    push cx
+    push dx
+    push disk_read
+
+    push cx
+    call lba_to_chs
+    pop ax
+
+    mov ah, 0x2
+    mov di, 3
+.retry:
+    pusha
+    stc
+    int 13h
+    jnc .done
+
+    popa
+    call disk_reset
+
+    dec di
+    test di, di
+    jnz .retry
+.fail:
+    jmp $
+.done:
+    popa
+    
+    pop di
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+disk_reset:
+    pusha
+    xor ah, ah
+    stc
+    int 0x13
+    jc $
+    popa
+    ret
+
 drive db 0
+bpb_sectors_per_track dw 0
+bpb_heads dw 0
+
 cursor_shape dw 0x003f
 cursor_position dw 0
 
-kalium_os db "kaliumOS version 0.00.2.0", 0xa, "rich in potassium", 0
+kalium_os db "********* kaliumOS version 0.00.2.1 *********", 0xa, "rich in potassium", 0xa, 0xa, 0
