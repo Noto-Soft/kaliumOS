@@ -142,6 +142,8 @@ start:
     jmp .load_loop
 .finish:
     mov dl, [ebr_drive]
+    mov cx, [bpb_sectors_per_track]
+    mov bx, [bpb_heads]
 
     jmp KERNEL_SEGMENT:KERNEL_OFFSET
 
