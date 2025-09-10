@@ -10,9 +10,15 @@ main:
     mov ds, ax
     mov es, ax
 
-    mov [drive], dl
-    mov [bpb_sectors_per_track], cx
-    mov [bpb_heads], bx
+    mov [ebr_drive], dl
+
+    mov ah, 0x2
+    mov al, 1
+    lea bx, [boot_sector]
+    xor ch, ch
+    mov cl, 1
+    xor dh, dh
+    int 0x13
 
     mov bl, 0x7
     call clear_screen
@@ -310,10 +316,31 @@ disk_reset:
     ret
 
 drive db 0
-bpb_sectors_per_track dw 0
-bpb_heads dw 0
 
 cursor_shape dw 0x003f
 cursor_position dw 0
 
-kalium_os db "********* kaliumOS version 0.00.2.1 *********", 0xa, "rich in potassium", 0xa, 0xa, 0
+kalium_os db "********* kaliumOS version 0.00.2.2 *********", 0xa, "rich in potassium", 0xa, 0xa, 0
+
+boot_sector:
+    db 3 dup(0)
+    bpb_oem_identifier db 8 dup(0)
+    bpb_bytes_per_sector dw ?
+    bpb_sectors_per_cluster db ?
+    bpb_reserved_sectors dw ?
+    bpb_fats db ?
+    bpb_root_directory_entries dw ?
+    bpb_sectors dw ?
+    bpb_media_descriptor db ?
+    bpb_sectors_per_fat dw ?
+    bpb_sectors_per_track dw ?
+    bpb_heads dw ?
+    bpb_hidden_sectors dd ?
+    bpb_large_sector_count dd ?
+    ebr_drive db ?
+    ebr_nt_flags db ?
+    ebr_signature db ?
+    ebr_serial dd ?
+    ebr_volume_label db 11 dup(0)
+    ebr_system_identifier db 8 dup(0)
+    db 450 dup(0)
