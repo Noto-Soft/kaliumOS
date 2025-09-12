@@ -320,7 +320,7 @@ drive db 0
 cursor_shape dw 0x003f
 cursor_position dw 0
 
-kalium_os db "********* kaliumOS version 0.00.2.2 *********", 0xa, "rich in potassium", 0xa, 0xa, 0
+kalium_os db "********* kaliumOS version 0.00.2.3 *********", 0xa, "rich in potassium", 0xa, 0xa, 0
 
 file_boot_txt db "BOOT    TXT"
 
