@@ -128,11 +128,15 @@ start:
     mul dx
     add ax, [starting_sector]
 
-    mov cl, 1
+    mov cl, [bpb_sectors_per_cluster]
     mov dl, [ebr_drive]
     call disk_read
 
-    add bx, [bpb_bytes_per_sector]
+    mov ax, [bpb_bytes_per_sector]
+    xor ch, ch
+    mov cl, [bpb_sectors_per_cluster]
+    mul cx
+    add bx, ax
 
     mov ax, [kernel_cluster]
     mov cx, 3
