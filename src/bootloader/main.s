@@ -103,40 +103,19 @@ start:
     mov dl, [ebr_drive]
     call disk_read
 
-    mov ax, [bpb_root_directory_entries]
-    shl ax, 5
-    add ax, [bpb_bytes_per_sector]
-    dec ax
-    xor dx, dx
-    div word [bpb_bytes_per_sector]
-    mov cx, ax
-    xor ah, ah
-    mov al, [bpb_fats]
-    mul [bpb_sectors_per_fat]
-    add ax, [bpb_reserved_sectors]
-    add ax, cx
-    mov [starting_sector], ax
-
     mov bx, KERNEL_SEGMENT
     mov es, bx
     mov bx, KERNEL_OFFSET
 .load_loop:
     mov ax, [kernel_cluster]
-    sub ax, 2
-    xor dh, dh
-    mov dl, [bpb_sectors_per_cluster]
-    mul dx
-    add ax, [starting_sector]
+    
+    add ax, 31 ; not nice at all thanks nanobyte for not helping
 
-    mov cl, [bpb_sectors_per_cluster]
+    mov cl, 1
     mov dl, [ebr_drive]
     call disk_read
 
-    mov ax, [bpb_bytes_per_sector]
-    xor ch, ch
-    mov cl, [bpb_sectors_per_cluster]
-    mul cx
-    add bx, ax
+    add bx, [bpb_bytes_per_sector]
 
     mov ax, [kernel_cluster]
     mov cx, 3
