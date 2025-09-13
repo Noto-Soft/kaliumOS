@@ -315,18 +315,18 @@ disk_reset:
     popa
     ret
 
-drive db 0
-
 cursor_shape dw 0x003f
 cursor_position dw 0
 
-kalium_os db "********* kaliumOS version 0.00.2.3 *********", 0xa, "rich in potassium", 0xa, 0xa, 0
+kalium_os db "************************** kaliumOS version 0.00.2.4 ***************************", 0xa, 0
 
 file_boot_txt db "BOOT    TXT"
 
+drive db ?
+
 boot_sector:
-    db 3 dup(0)
-    bpb_oem_identifier db 8 dup(0)
+    db 3 dup(?)
+    bpb_oem_identifier db 8 dup(?)
     bpb_bytes_per_sector dw ?
     bpb_sectors_per_cluster db ?
     bpb_reserved_sectors dw ?
@@ -343,8 +343,6 @@ boot_sector:
     ebr_nt_flags db ?
     ebr_signature db ?
     ebr_serial dd ?
-    ebr_volume_label db 11 dup(0)
-    ebr_system_identifier db 8 dup(0)
-    db 450 dup(0)
-
-file_buffer:
+    ebr_volume_label db 11 dup(?)
+    ebr_system_identifier db 8 dup(?)
+    db 450 dup(?)

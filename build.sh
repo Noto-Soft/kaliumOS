@@ -7,9 +7,10 @@ fasm src/kernel/main.s build/kernel.bin
 
 # create disk
 dd if=/dev/zero of=kaliumOS.img bs=512 count=2880
-mkfs.fat -F 12 -n "kaliumOS" kaliumOS.img
+mkfs.fat -F 12 -n "KALIUM" kaliumOS.img
 dd if=build/boot.bin of=kaliumOS.img conv=notrunc
 mcopy -i kaliumOS.img build/kernel.bin "::kernel.bin"
+mcopy -i kaliumOS.img assets/boot.txt "::boot.txt"
 
 # test
 qemu-system-i386 \
